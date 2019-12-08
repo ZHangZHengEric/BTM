@@ -16,7 +16,10 @@ private:
   vector<int> ws;	// word sequence
   
 public: 
-  Doc(const string& s) {read_doc(s);}
+  Doc(const std::vector<int> & docidx) :
+    ws(docidx) {
+      
+    }
 
   int size() const {return ws.size();}
   

@@ -13,7 +13,7 @@
 #include <sstream>
 #include <cstdio>
 #include <cstdlib>
-#include <algorithm> 
+#include <algorithm>
 
 #define EXIT_ERR( s1, s2 ) {printf("[Error] %s%s\n", s1, s2);	\
 	exit(EXIT_FAILURE);}
@@ -22,13 +22,14 @@ using namespace std;
 
 template<class T>
 class Pvec {
-private:
-  vector<T> p;
-    
+
+  
+
 public:
   Pvec(){}
   Pvec(size_t n): p(n) {}
   Pvec(size_t n, T v): p(n, v) {}
+  vector<T> p;
 
   template<class T2>
   Pvec(const vector<T2>& v) {
@@ -46,7 +47,7 @@ public:
   Pvec(const string& line) {
 	loadString(line);
   }
-  
+
   size_t size() const {return p.size();}
   void resize(size_t n) {p.resize(n);}
   void resize(size_t n, const T& v) {p.resize(n, v);}
@@ -54,36 +55,36 @@ public:
 
   void rand_init() {
 	srand(time(NULL));
-	for (size_t i = 0; i < p.size(); ++i) 
+	for (size_t i = 0; i < p.size(); ++i)
 	  p[i] = rand() % 100 + 1;
 
 	normalize();
   }
 
   void fill(T v) {
-	for( size_t i = 0 ; i < p.size() ; ++i ) 
+	for( size_t i = 0 ; i < p.size() ; ++i )
 	  p[i] = v;
   }
-  
+
   void uniform_init() {
-	for( size_t i = 0 ; i < p.size() ; ++i ) 
+	for( size_t i = 0 ; i < p.size() ; ++i )
 	  p[i] = double(1) / p.size();
   }
-  
+
   // p[0] = v, others is (1-v)/(p.size - 1)
   void bias_init(double v) {
 	assert( v < 1);
 	p[0] = v;
-	for( size_t i = 1 ; i < p.size() ; ++i ) 
+	for( size_t i = 1 ; i < p.size() ; ++i )
 	  p[i] = (double)((1-v) / ((int)p.size()-1));
   }
-  
+
   void push_back(T v) {p.push_back(v);}
 
   void extend(const Pvec<T>& vec) {
 	p.insert(p.end(), vec.p.begin(), vec.p.end());
   }
-  
+
   void loadString(const string& line) {
 	p.clear();
 	istringstream iss(line);
@@ -98,7 +99,7 @@ public:
   void loadFile(const string& inf) {
 	p.clear();
 	ifstream rf(inf.c_str());
-	if (!rf) 
+	if (!rf)
 	  EXIT_ERR("file not find:", inf.c_str());
 	loadFileStream(rf);
   }
@@ -110,17 +111,17 @@ public:
 	  p.push_back(v);
 	}
   }
-  
+
   T sum() const{
 	T s = 0;
-	for( size_t i = 0 ; i < p.size() ; ++i ) 
+	for( size_t i = 0 ; i < p.size() ; ++i )
 	  s += p[i];
 	return s;
   }
 
   T norm() const{
 	T s = 0;
-	for( size_t i = 0 ; i < p.size() ; ++i ) 
+	for( size_t i = 0 ; i < p.size() ; ++i )
 	  s += p[i]*p[i];
 	return sqrt(s);
   }
@@ -128,7 +129,7 @@ public:
   void normalize(double smoother = 0.0) {
 	T s = sum();
 	assert(s>=0);
-  
+
 	int K = p.size();
 	// avoid numerical problem
 	for( size_t i = 0 ; i < K ; ++i ) {
@@ -141,9 +142,9 @@ public:
 	vector<T> tmp(p);
 	for (size_t i = 0; i < p.size(); ++i ) {
 	  double s = 0.0;
-	  for (size_t j = 0; j < p.size(); ++j ) 
+	  for (size_t j = 0; j < p.size(); ++j )
 		s += exp( tmp[j] - tmp[i] );
-	
+
 	  assert(s>=1);
 	  p[i] = 1/s;
 	}
@@ -161,12 +162,12 @@ public:
 	copy(v.begin(), v.end(), p.begin());
 	return *this;
   }
-  
+
   T &operator[](int i) {
 	if (i >= p.size())
 	  cout << "ERR: index=" << i << ", size=" << p.size() << endl;
 	assert(i < p.size());
-	return p[i]; 
+	return p[i];
   }
 
   const T& operator[](int i) const{assert(i<p.size()); return p[i];}
@@ -212,13 +213,13 @@ public:
 	return tp;
   }
 
-  Pvec<T>& operator-=(const T & v){  
+  Pvec<T>& operator-=(const T & v){
 	for (int i=0; i<p.size(); ++i)
 	  p[i] -= v;
 	return *this;
   }
 
-  Pvec<T>& operator-=(const Pvec& v) { 
+  Pvec<T>& operator-=(const Pvec& v) {
 	for (int i=0; i<p.size(); ++i)
 	  p[i] -= v[i];
 	return *this;
@@ -231,7 +232,7 @@ public:
 	return tp;
   }
 
-  Pvec<T>& operator*=(const T& v) { 
+  Pvec<T>& operator*=(const T& v) {
 	for (int i=0; i<p.size(); ++i)
 	  p[i] *= v;
 	return *this;
@@ -244,7 +245,7 @@ public:
 	return tp;
   }
 
-  Pvec<T>& operator/=(const T& v) { 
+  Pvec<T>& operator/=(const T& v) {
 	assert(v > 0);
 	for (int i=0; i<p.size(); ++i)
 	  p[i] /= v;
@@ -286,16 +287,16 @@ public:
   }
 
   void clear() {p.clear();}
-    
+
   vector<T> to_vector() {return p;}
   Pvec<double> toDouble() {return Pvec<double>(*this);}
 
   string str(char delim = ' ') const{
 	ostringstream os;
 	size_t i;
-	for( i = 0 ; i < p.size(); ++i ) 
+	for( i = 0 ; i < p.size(); ++i )
 	  os << p[i] << delim;
-  
+
 	return os.str();
   }
 
@@ -307,7 +308,7 @@ public:
 	  if (p[i] > v)
 		os << i << ':' << p[i] << ' ';
 	}
-  
+
 	return os.str();
   }
 
@@ -317,7 +318,7 @@ public:
 	  cout << "Path not exists:" << pt << endl;
 	  exit(-1);
 	}
-  
+
 	wf << str(delim);
   }
 };

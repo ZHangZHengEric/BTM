@@ -1,12 +1,12 @@
 CC=g++
-CFLAGS=-c -pipe -O3
+CFLAGS=-c -pipe -O3 -I/usr/include/python3.8/ -fPIC
 MODEL_OBJ=model.o infer.o main.o
-MODEL_EXE=btm
+MODEL_LIB=btm.so
+LDFLAGS=-lpython3 -lboost_python38 -lpython3.8 -lboost_numpy38
+all:$(MODEL_LIB) 
 
-all:$(MODEL_EXE) 
-
-$(MODEL_EXE):$(MODEL_OBJ)
-	$(CC) $(MODEL_OBJ) -o $@
+$(MODEL_LIB):$(MODEL_OBJ)
+	$(CC) -shared $(MODEL_OBJ) $(LDFLAGS) -o $@
 
 main.o:model.h
 model.o:model.h biterm.h doc.h
