@@ -25,7 +25,6 @@ Pmat<double> Infer::predict(const std::vector<std::string> & docs, const std::un
       		w = trim(w);
 		    if (w2id.find(w) == w2id.end()) {
         		word_idx.push_back(0);
-				std::cout << "aa";
       		} else {
       			word_idx.push_back(w2id.at(w));
 			}
@@ -34,7 +33,6 @@ Pmat<double> Infer::predict(const std::vector<std::string> & docs, const std::un
 		Pvec<double> pz_d(K);
 		doc_infer(doc, pz_d);
 		predictions.push_back(pz_d);
-		std::cout << pz_d[0] << "\n";
 	}
 	return Pmat<double>(predictions);
 }

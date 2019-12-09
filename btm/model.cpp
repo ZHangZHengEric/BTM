@@ -49,7 +49,7 @@ bn::ndarray to_numpy(const Pmat<double> &pw_z) {
   return result;
 }
 
-BOOST_PYTHON_MODULE(btm) {
+BOOST_PYTHON_MODULE(btm_cpp) {
   bn::initialize();
   python::class_<Model>("Model",
                         python::init<int, double, double, int, int, bool>())
@@ -72,6 +72,7 @@ void Model::run(const std::vector<string> &documents) {
   this->model_init();
 
   for (int it = 1; it < n_iter + 1; ++it) {
+    std::cout << it << " of " << n_iter+1 << "\n";
     for (int b = 0; b < bs.size(); ++b) {
       update_biterm(bs[b]);
     }
