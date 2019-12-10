@@ -8,11 +8,13 @@ from subprocess import call
 
 BASEPATH = os.path.dirname(os.path.abspath(__file__))
 BTM_PATH = os.path.join(BASEPATH, 'btm')
-
+extra_compile_args = ["-std=c++11"]
 btm_cpp = Extension('btm_cpp',
                     define_macros = [('MAJOR_VERSION', '1'),
                                      ('MINOR_VERSION', '0')],
                     libraries = ['boost_python3', 'boost_numpy3'],
+                    language='c++11',
+                    extra_compile_args=extra_compile_args,
                     sources = ['btm/model.cpp','btm/infer.cpp'])
 
 
