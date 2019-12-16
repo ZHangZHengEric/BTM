@@ -58,14 +58,19 @@ BOOST_PYTHON_MODULE(btm_cpp) {
       .def("get_pz", &Model::get_pz_py)
       .def("get_pw_z", &Model::get_pw_z_py)
       .def("predict", &Model::predict_py)
-      .def("vocabulary", &Model::vocabulary_py);
+      .def("vocabulary", &Model::vocabulary_py).
+      def("fit_step", &Model::fit_step);
 }
 
 Model::Model(int K, double a, double b, int n_iter, int save_step,
              bool has_b = false)
     : K(K), alpha(a), beta(b), n_iter(n_iter), has_background(has_b),
-      save_step(save_step) {}
-void Model::run_python(const python::list &documents) {
+      save_step(save_step), initialized(false)
+  {
+
+  }
+void Model::run_python(const python::list &documents) 
+{
   this->run(to_std_vector<std::string>(documents));
 }
 void Model::run(const std::vector<string> &documents) {
@@ -74,9 +79,17 @@ void Model::run(const std::vector<string> &documents) {
   tqdm bar;
   for (int it = 1; it < n_iter + 1; ++it) {
     bar.progress(it, n_iter);
+    this->fit_step();
+  }
+}
+void Model::fit_step() 
+{
+  if (this->initialized) {
     for (int b = 0; b < bs.size(); ++b) {
       update_biterm(bs[b]);
     }
+  } else {
+    std::cout << "Model not initialized" << std::endl;
   }
 }
 
@@ -87,6 +100,7 @@ void Model::model_init() {
     int k = Sampler::uni_sample(K);
     assign_biterm_topic(*b, k);
   }
+  this->initialized = true;
 }
 
 void Model::build_vocabulary(const std::vector<std::string> &documents) {

@@ -46,6 +46,7 @@ protected:
   // Vocabulary word to index
   std::unordered_map<std::string, int> w2id;
 
+  bool initialized;
 public:
   Model(int K, double a, double b, int n_iter, int save_step,
         bool has_b);
@@ -60,6 +61,8 @@ public:
   Pmat<double> predict(const std::vector<std::string> & s, const std::string & ttype);
   boost::python::numpy::ndarray predict_py(const boost::python::list &documents,  const std::string & ttype);
   boost::python::dict vocabulary_py() const;
+
+  void fit_step();
 private:
   // intialize memeber varibles and biterms
   void model_init(); // load from docs
