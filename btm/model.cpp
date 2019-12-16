@@ -12,6 +12,7 @@
 #include "str_util.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/python.hpp>
+#include "tqdm.h"
 namespace bn = boost::python::numpy;
 using namespace boost;
 using namespace str_util;
@@ -70,9 +71,9 @@ void Model::run_python(const python::list &documents) {
 void Model::run(const std::vector<string> &documents) {
   this->load_docs(documents);
   this->model_init();
-
+  tqdm bar;
   for (int it = 1; it < n_iter + 1; ++it) {
-    std::cout << it << " of " << n_iter+1 << "\n";
+    bar.progress(it, n_iter);
     for (int b = 0; b < bs.size(); ++b) {
       update_biterm(bs[b]);
     }
