@@ -5,10 +5,18 @@ from distutils.command.build import build
 import os
 from multiprocessing import cpu_count
 from subprocess import call
+import pyyaml
 
 BASEPATH = os.path.dirname(os.path.abspath(__file__))
 BTM_PATH = os.path.join(BASEPATH, 'btm')
 extra_compile_args = ["-std=c++11"]
+
+CONFIGPATH = os.path.join(BASEPATH, 'config.yaml')
+
+if os.path.isfile(CONFIGPATH):
+    with open(CONFIGPATH, 'r') as file:
+        config = yaml.load(file)
+    
 btm_cpp = Extension('btm_cpp',
                     define_macros = [('MAJOR_VERSION', '1'),
                                      ('MINOR_VERSION', '0')],
