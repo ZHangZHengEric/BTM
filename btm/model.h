@@ -27,7 +27,6 @@ protected:
   int W;      // vocabulary size
   int K;      // number of topics
   int n_iter; // maximum number of iteration of Gibbs Sampling
-  int save_step;
 
   double alpha; // hyperparameters of p(z)
   double beta;  // hyperparameters of p(w|z)
@@ -48,8 +47,8 @@ protected:
 
   bool initialized;
 public:
-  Model(int K, double a, double b, int n_iter, int save_step,
-        bool has_b);
+  Model(int K, double a, double b, int n_iter,
+        bool has_b, bool show_progressbar);
 
   // run estimate procedures
   void run_python(const boost::python::list &documents);
@@ -84,6 +83,9 @@ private:
   Pmat<double> get_pw_z() const;
   void build_vocabulary(const std::vector<std::string> &documents);
   Doc build_doc(const std::string & line);
+
+private:
+  bool m_show_progressbar;
 
 };
 

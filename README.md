@@ -27,7 +27,9 @@ number_of_topics = 2
 alpha = 50/2
 beta = 0.0005
 n_iters = 50000
-btm_model = btm.Model(number_of_topics, alpha, beta, n_iters, 3, True)
+background_topic = True
+show_progressbar = True
+btm_model = btm.Model(number_of_topics, alpha, beta, n_iters, background_topic, show_progressbar)
 btm_model.fit(["sentence 1", "sentence 2", "sentence 2"])
 pz = btm_model.get_pz()
 pw_z = btm_model.get_pw_z( )

@@ -53,19 +53,20 @@ bn::ndarray to_numpy(const Pmat<double> &pw_z) {
 BOOST_PYTHON_MODULE(btm_cpp) {
   bn::initialize();
   python::class_<Model>("Model",
-                        python::init<int, double, double, int, int, bool>())
+                        python::init<int, double, double, int, bool, bool>())
       .def("fit", &Model::run_python)
       .def("get_pz", &Model::get_pz_py)
       .def("get_pw_z", &Model::get_pw_z_py)
       .def("predict", &Model::predict_py)
       .def("vocabulary", &Model::vocabulary_py).
-      def("fit_step", &Model::fit_step);
+       def("fit_step", &Model::fit_step);
 }
 
-Model::Model(int K, double a, double b, int n_iter, int save_step,
-             bool has_b = false)
+Model::Model(int K, double a, double b, int n_iter,
+             bool has_b = false, bool show_progressbar = false)
     : K(K), alpha(a), beta(b), n_iter(n_iter), has_background(has_b),
-      save_step(save_step), initialized(false)
+      initialized(false),
+      m_show_progressbar(show_progressbar)
   {
 
   }
@@ -76,9 +77,14 @@ void Model::run_python(const python::list &documents)
 void Model::run(const std::vector<string> &documents) {
   this->load_docs(documents);
   this->model_init();
-  tqdm bar;
+  std::shared_ptr<tqdm> bar;
+  if (this->m_show_progressbar) {
+    bar = std::make_shared<tqdm>();
+  }
   for (int it = 1; it < n_iter + 1; ++it) {
-    bar.progress(it, n_iter);
+    if (this->m_show_progressbar) {
+      bar->progress(it, n_iter);
+    }
     this->fit_step();
   }
 }
