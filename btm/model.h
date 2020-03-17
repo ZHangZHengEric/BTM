@@ -61,7 +61,10 @@ public:
   boost::python::numpy::ndarray predict_py(const boost::python::list &documents,  const std::string & ttype);
   boost::python::dict vocabulary_py() const;
 
+  void initialize_python(const boost::python::list &documents);
+
   void fit_step();
+  void initialize(const std::vector<string> &documents);
 private:
   // intialize memeber varibles and biterms
   void model_init(); // load from docs

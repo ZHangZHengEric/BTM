@@ -21,6 +21,9 @@ cd $project
 pip install .
 ```
 The setup.py will compile the extension
+
+
+It is possible to fit the whole data usen the fit method using `n_iters` iterations.
 ```python
 import btm
 number_of_topics = 2
@@ -36,8 +39,21 @@ pw_z = btm_model.get_pw_z( )
 vocabulary = btm_model.vocabulary()
 b = btm_model.predict(["ANother sentence"], "sum_b")
 ```
-
-
+or it is possible to ignore `n_iters` and fit the model manually using the `fit_step` method. It is
+necessary, nevertheless, to call the `initialize` method with the corpus.
+```python
+import btm
+number_of_topics = 2
+alpha = 50/2
+beta = 0.0005
+n_iters = 0
+background_topic = True
+show_progressbar = True
+btm_model = btm.Model(number_of_topics, alpha, beta, n_iters, background_topic, show_progressbar)
+btm_model.initialize(["sentence 1", "sentence 2", "sentence 2"])
+for j in range(500):
+    btm_model.fit_step()
+```
 ## Related codes ##
 - [Online BTM](https://github.com/xiaohuiyan/OnlineBTM)
 - [Bursty BTM](https://github.com/xiaohuiyan/BurstyBTM)
@@ -47,3 +63,4 @@ b = btm_model.predict(["ANother sentence"], "sum_b")
 - 2012-09-25, v0.1
 
 If there is any question, feel free to contact: [Xiaohui Yan](http://xiaohuiyan.github.io "Xiaohui Yan")(xhcloud@gmail.com).
+

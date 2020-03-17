@@ -58,8 +58,9 @@ BOOST_PYTHON_MODULE(btm_cpp) {
       .def("get_pz", &Model::get_pz_py)
       .def("get_pw_z", &Model::get_pw_z_py)
       .def("predict", &Model::predict_py)
-      .def("vocabulary", &Model::vocabulary_py).
-       def("fit_step", &Model::fit_step);
+      .def("vocabulary", &Model::vocabulary_py)
+      .def("initialize", &Model::initialize_python)
+      .def("fit_step", &Model::fit_step);
 }
 
 Model::Model(int K, double a, double b, int n_iter,
@@ -75,8 +76,7 @@ void Model::run_python(const python::list &documents)
   this->run(to_std_vector<std::string>(documents));
 }
 void Model::run(const std::vector<string> &documents) {
-  this->load_docs(documents);
-  this->model_init();
+  this->initialize(documents);
   std::shared_ptr<tqdm> bar;
   if (this->m_show_progressbar) {
     bar = std::make_shared<tqdm>();
@@ -261,4 +261,12 @@ bn::ndarray Model::predict_py(const python::list &pydocuments,
 }
 boost::python::dict Model::vocabulary_py() const {
   return to_python(this->w2id);
+}
+void Model::initialize_python(const boost::python::list &documents)
+{
+  this->initialize(to_std_vector<std::string>(documents));
+}
+void Model::initialize(const std::vector<string> &documents) {
+  this->load_docs(documents);
+  this->model_init();
 }
